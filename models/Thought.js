@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const reactionSchema = require('./Reaction')
 
 const thoughtSchema = new mongoose.Schema({
-  thoughtText: { type: String, required: true }, //needs char verification 1-280
-  createdAt: { type: Date, default: Date.now, required: true }, //getter to format??
+  thoughtText: { type: String, required: true, minlength: 1, maxlength: 280, },
+  createdAt: { type: Date, default: Date.now, required: true, get: createdAtVal => dateFormat(createdAtVal) }, //getter to format??
   username: { type: String, required: true },
-  reactions: [reactionSchema], // Array of nested documents created with the reactionSchema?
+  reactions: [reactionSchema],
 
 }, {
   toJSON: { getters: true, virtuals: true },
@@ -28,5 +28,9 @@ Thought.create(
   },
   (err) => (err ? handleError(err) : console.log('Created new document'))
 );
+
+function dateFormat(date) {
+  return new Date(date).toLocaleDateString();
+}
 
 module.exports = Thought;
