@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  username: { type: String, required: true }, //look up unique and trimmed and add
-  email: { type: String, required: true}, //look up and add unique and validation
-  thoughts: { type: Array}, // array of ids referencing the thoughts to the user?
-  friends: { type: Array}, // references the user model?  
+  username: { type: String, required: true, unique: true, trimmed: true },
+  email: { type: String, required: true, unique: true, match: [/\S+@\S+\.\S+/, 'Error: Incorrect E-Mail Format']  }, //is this correct?
+  thoughts: { type: Array, ref: 'Thought' },
+  friends: { type: Array, ref: 'User' },
   lastAccessed: { type: Date, default: Date.now }, //do I need this?
 });
 
