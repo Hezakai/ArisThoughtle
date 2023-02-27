@@ -19,8 +19,31 @@ app.get('/user', (req, res) => {
   });
 });
 
+app.get('/thought', (req, res) => {
+  Thought.find({}, (err, result) => {
+    if (err) {
+      res.status(500).send({ message: 'Internal Server Error' });
+    } else {
+      res.status(200).json(result);
+    }
+  });
+});
+
+app.get('/reaction', (req, res) => {
+  Reaction.find({}, (err, result) => {
+    if (err) {
+      res.status(500).send({ message: 'Internal Server Error' });
+    } else {
+      res.status(200).json(result);
+    }
+  });
+});
+
 db.once('open', () => {
   app.listen(PORT, () => {
     console.log(`API server running on port ${PORT}!`);
   });
 });
+
+
+// await Parent.findOne().populate('child')
