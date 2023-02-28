@@ -5,7 +5,6 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true, match: [/\S+@\S+\.\S+/, 'Error: Incorrect E-Mail Format']  }, //is this correct?
   thoughts: { type: Array, ref: 'Thought' },
   friends: { type: Array, ref: 'User' },
-  lastAccessed: { type: Date, default: Date.now }, //do I need this?
 });
 
 userSchema.virtual('friendCount').get(function () {
