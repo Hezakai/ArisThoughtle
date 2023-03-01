@@ -167,21 +167,21 @@ app.get('/thoughts/:id?', (req, res) => {
 app.post('/thoughts', (req, res) => {
   const { thoughtText, username, userId } = req.body;
 
-  Thought.create({ thoughtText, username}, (err, result) => {
+  Thought.create({ thoughtText, username }, (err, result) => {
     if (err) {
       res.status(500).send({ message: 'Internal Server Error' });
     } else {
       const thoughtId = result._id;
       User.findByIdAndUpdate(userId, { $push: { thoughts: thoughtId } }, { new: true })
-      .exec((err, user) => {
-        if (err) {
-          res.status(500).send({ message: 'Internal Server Error' });
-        } else if (!user) {
-          res.status(404).send({ message: 'User not found' });
-        } else {
-          res.status(200).send({ message: `${thoughtId} has been added to ${user.username}'s thoughts` });
-        }
-      });
+        .exec((err, user) => {
+          if (err) {
+            res.status(500).send({ message: 'Internal Server Error' });
+          } else if (!user) {
+            res.status(404).send({ message: 'User not found' });
+          } else {
+            res.status(200).send({ message: `${thoughtId} has been added to ${user.username}'s thoughts` });
+          }
+        });
     }
   });
 });
@@ -191,7 +191,7 @@ app.put('/thoughts/:id', (req, res) => {
   const { id } = req.params;
   const { thoughtText } = req.body;
 
-  Thought.findByIdAndUpdate(id, { thoughtText}, { new: true }, (err, result) => {
+  Thought.findByIdAndUpdate(id, { thoughtText }, { new: true }, (err, result) => {
     if (err) {
       res.status(500).send({ message: 'Internal Server Error' });
     } else if (!result) {
@@ -261,11 +261,11 @@ app.delete('/thoughts/:thoughtId/reactions', async (req, res) => {
 
     if (!thought) {
       return res.status(404).send({ message: 'Thought not found' });
+    } else {
+      await Thought.findByIdAndUpdate({ _id: thoughtId }, { $pull: { reactions: { reactionId: reactionId } } }, { new: true });
+      res.status(200).send({ message: `Reaction ${reactionId} deleted successfully removed from thought ${thoughtId}` });
     }
 
-    await Thought.findByIdAndUpdate({ _id: thoughtId }, { $pull: { reactions: { _id: reactionId } } }, { new: true });
-
-    res.status(200).send({ message: `Reaction ${reactionId} deleted successfully removed from thought ${thoughtId}` });
   } catch (error) {
     console.error(error);
     res.status(500).send({ message: 'Internal Server Error' });
